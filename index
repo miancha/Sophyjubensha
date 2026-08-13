@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>To Rose</title>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rose-deep:#8a2030;
+  --rose-dark:#a03848;
+  --rose-mid:#c0505a;
+  --rose-light:#d4636a;
+  --rose-pale:#e8a0a8;
+  --rose-blush:#f5d5d8;
+  --leaf:#7a9e6a;
+  --paper:#fdf2f0;
+  --paper-warm:#f5e2df;
+  --ink:#4a3828;
+  --ink-light:#7a6050;
+  --gold-soft:rgba(180,150,110,0.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Noto Serif SC',serif;}
+
+body{
+  background: linear-gradient(160deg, #fdf2f0 0%, #f5e6e3 30%, #f0dcd9 60%, #e8c8c5 100%);
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ══════ 柔光粒子 ══════ */
+.particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;}
+.particle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,200,160,0.6),transparent 70%);animation:floatUp linear infinite;opacity:0;}
+@keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:1;}90%{opacity:.6;}100%{transform:translateY(-10vh) scale(1);opacity:0;}}
+
+/* ══════ 信封 ══════ */
+.envelope-wrapper{
+  position:relative;z-index:10;
+  display:flex;flex-direction:column;align-items:center;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:opacity .8s ease,transform .8s ease;
+}
+.envelope-wrapper.fade-out{opacity:0;transform:scale(.92);pointer-events:none;}
+
+#envelope{
+  position:relative;
+  width:280px;height:180px;
+  border-bottom-left-radius:6px;
+  border-bottom-right-radius:6px;
+  background-color:#c07868;
+  box-shadow:0 4px 20px rgba(160,80,60,.3);
+}
+
+.front{position:absolute;width:0;height:0;z-index:3;}
+
+.flap{
+  border-left:140px solid transparent;
+  border-right:140px solid transparent;
+  border-bottom:82px solid transparent;
+  border-top:98px solid #c07868;
+  transform-origin:top;
+  pointer-events:none;
+}
+
+.pocket{
+  border-left:140px solid #d9a898;
+  border-right:140px solid #d9a898;
+  border-bottom:90px solid #cc9080;
+  border-top:90px solid transparent;
+  border-bottom-left-radius:6px;
+  border-bottom-right-radius:6px;
+}
+
+.letter{
+  position:relative;
+  background-color:#fefcf7;
+  width:90%;height:90%;
+  margin-left:auto;margin-right:auto;
+  top:5%;
+  border-radius:6px;
+  box-shadow:0 2px 26px rgba(0,0,0,.12);
+  z-index:1;
+}
+
+.letter::after{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(180deg,
+    rgba(255,255,255,0) 25%,
+    rgba(215,200,190,.7) 55%,
+    rgba(215,200,190,1) 100%);
+  border-radius:6px;
+}
+
+.words{position:absolute;left:10%;width:80%;height:14%;background-color:#eeeff0;border-radius:2px;}
+.words.line1{top:15%;width:20%;height:7%;}
+.words.line2{top:30%;}
+.words.line3{top:50%;}
+.words.line4{top:70%;}
+
+.close .flap{
+  transform:rotateX(0deg);
+  transition:transform .4s .6s ease,z-index 1s;
+  z-index:5;
+}
+.close .letter{
+  transform:translateY(0);
+  transition:transform .4s ease,z-index 1s;
+  z-index:1;
+}
+.close .heart{opacity:0;animation:none;}
+
+.open .flap{
+  transform:rotateX(180deg);
+  transition:transform .4s ease,z-index .6s;
+  z-index:1;
+}
+.open .letter{
+  transform:translateY(-60px);
+  transition:transform .4s .6s ease,z-index .6s;
+  z-index:2;
+}
+
+.hearts{position:absolute;top:90px;left:0;right:0;z-index:2;}
+.heart{position:absolute;bottom:0;right:10%;pointer-events:none;}
+.heart::before,.heart::after{
+  position:absolute;content:"";left:50px;top:0;
+  width:50px;height:80px;
+  background:var(--rose-mid);
+  border-radius:50px 50px 0 0;
+  transform:rotate(-45deg);transform-origin:0 100%;
+  pointer-events:none;
+}
+.heart::after{left:0;transform:rotate(45deg);transform-origin:100% 100%;}
+
+.open .a1{left:20%;transform:scale(.6);opacity:1;animation:slideUp 4s linear 1 forwards,sideSway 2s ease-in-out 4 alternate;animation-delay:.7s;}
+.open .a2{left:55%;transform:scale(1);opacity:1;animation:slideUp 5s linear 1 forwards,sideSway 4s ease-in-out 2 alternate;animation-delay:.7s;}
+.open .a3{left:10%;transform:scale(.8);opacity:1;animation:slideUp 7s linear 1 forwards,sideSway 2s ease-in-out 6 alternate;animation-delay:.7s;}
+@keyframes slideUp{0%{top:0;}100%{top:-600px;}}
+@keyframes sideSway{0%{margin-left:0;}100%{margin-left:50px;}}
+
+.hint{margin-top:25px;color:#b07060;font-size:14px;letter-spacing:3px;animation:pulse 2s ease-in-out infinite;font-family:'Noto Serif SC',serif;}
+@keyframes pulse{0%,100%{opacity:.4;transform:scale(1);}50%{opacity:1;transform:scale(1.05);}}
+
+/* ══════ 全屏信件 ══════ */
+.letter-fullscreen{position:fixed;inset:0;z-index:100;opacity:0;pointer-events:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:linear-gradient(160deg, #fdf2f0 0%, #f5e6e3 30%, #f0dcd9 60%, #e8c8c5 100%);}
+.letter-fullscreen.show{opacity:1;pointer-events:auto;transition:opacity 1.2s ease;}
+.letter-fullscreen::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23t)' opacity='0.018'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+.letter-scroll{min-height:100%;padding:20px 12px 24px;position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:center;}
+
+
+
+/* ══════ 信件图片 ══════ */
+.letter-image-wrap{
+  width:100%;
+  padding:8px 4px 6px;
+  opacity:0;
+  display:flex;
+  justify-content:center;
+}
+.letter-image-wrap.anim{animation:fadeInUp 1.2s ease forwards;}
+
+.letter-image-wrap img{
+  width:100%;
+  max-width:640px;
+  height:auto;
+  display:block;
+  border-radius:2px;
+  /* 轻微纸张质感阴影 */
+  filter:drop-shadow(0 1px 3px rgba(80,40,30,0.10));
+}
+
+@keyframes fadeInUp{0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
+
+/* 飘落花瓣 */
+.petals-container{position:fixed;inset:0;pointer-events:none;z-index:101;overflow:hidden;}
+.falling-petal{position:absolute;top:-20px;border-radius:50% 0 50% 50%;animation:petalFall linear infinite;}
+@keyframes petalFall{
+  0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:0;}
+  8%{opacity:.7;}
+  50%{transform:translateY(50vh) rotate(180deg) translateX(40px);opacity:.5;}
+  100%{transform:translateY(105vh) rotate(380deg) translateX(-20px);opacity:0;}
+}
+
+/* 光晕 */
+.glow{position:fixed;top:-30%;left:-30%;width:160%;height:160%;background:radial-gradient(ellipse at 50% 30%,rgba(255,190,170,.1),transparent 60%);pointer-events:none;z-index:98;opacity:0;transition:opacity 2s ease;}
+.glow.show{opacity:1;}
+
+/* ══════ 响应式 ══════ */
+@media(max-width:380px){
+  #envelope{width:250px;height:160px;}
+  .flap{
+    border-left-width:125px;border-right-width:125px;
+    border-bottom-width:72px;border-top-width:88px;
+  }
+  .pocket{
+    border-left-width:125px;border-right-width:125px;
+    border-bottom-width:80px;border-top-width:80px;
+  }
+  .hearts{top:80px;}
+  .open .letter{transform:translateY(-53px);}
+  .heart::before,.heart::after{width:40px;height:64px;border-radius:40px 40px 0 0;}
+  .heart::before{left:40px;}
+  .letter-frame{padding:10px 4px 12px;}
+  .letter-scroll{padding:14px 8px 18px;}
+}
+
+@media(min-width:381px) and (max-width:480px){
+  .letter-frame{padding:12px 6px 14px;}
+  .letter-scroll{padding:18px 10px 22px;}
+}
+
+@media(min-width:481px) and (max-width:768px){
+  .letter-frame{padding:16px 10px 20px;}
+  .letter-scroll{padding:24px 16px 28px;}
+}
+
+@media(min-width:769px){
+  .letter-frame{padding:20px 16px 24px;}
+  .letter-scroll{padding:28px 24px 36px;}
+  .letter-image-wrap{padding:12px 10px 10px;}
+}
+</style>
+</head>
+<body>
+
+<!-- 柔光粒子 -->
+<div class="particles" id="particles"></div>
+
+<!-- ══════ 信封 ══════ -->
+<div class="envelope-wrapper" id="envelopeWrapper" onclick="openEnvelope()">
+  <div id="envelope" class="close">
+    <div class="front flap"></div>
+    <div class="front pocket"></div>
+    <div class="letter">
+      <div class="words line1"></div>
+      <div class="words line2"></div>
+      <div class="words line3"></div>
+      <div class="words line4"></div>
+    </div>
+    <div class="hearts">
+      <div class="heart a1"></div>
+      <div class="heart a2"></div>
+      <div class="heart a3"></div>
+    </div>
+  </div>
+  <div class="hint" id="hint">轻触 · 打开</div>
+</div>
+
+<!-- ══════ 全屏信件 ══════ -->
+<div class="letter-fullscreen" id="letterFull">
+  <div class="letter-scroll">
+    <div class="letter-frame">
+
+      <!-- 信件图片 -->
+      <div class="letter-image-wrap" id="letterImage">
+        <img src="https://raw.githubusercontent.com/miancha/Sophyjubensha/refs/heads/main/letter.jpg" alt="Letter">
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 花瓣容器 -->
+<div class="petals-container" id="petalsContainer"></div>
+
+<!-- 光晕 -->
+<div class="glow" id="glow"></div>
+
+<!-- 音频 -->
+<audio id="bgm" loop preload="auto">
+  <source src="https://raw.githubusercontent.com/miancha/Sophyjubensha/refs/heads/main/mb.mp4" type="audio/mp4">
+</audio>
+<audio id="voice" preload="auto">
+  <source src="https://raw.githubusercontent.com/miancha/Sophyjubensha/refs/heads/main/To Rose.mp4" type="audio/mp4">
+</audio>
+
+<script>
+// ══════ 柔光粒子 ══════
+(function(){
+  var c=document.getElementById('particles');
+  for(var i=0;i<18;i++){
+    var p=document.createElement('div');
+    p.className='particle';
+    var s=Math.random()*8+3;
+    p.style.width=s+'px';
+    p.style.height=s+'px';
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDuration=(Math.random()*8+6)+'s';
+    p.style.animationDelay=(Math.random()*10)+'s';
+    c.appendChild(p);
+  }
+})();
+
+// ══════ 飘落花瓣 ══════
+function createPetals(){
+  var c=document.getElementById('petalsContainer');
+  var colors=[
+    'rgba(212,99,106,0.45)','rgba(192,80,90,0.35)',
+    'rgba(232,160,168,0.4)','rgba(160,56,72,0.3)',
+    'rgba(245,213,216,0.5)'
+  ];
+  for(var i=0;i<22;i++){
+    (function(idx){
+      setTimeout(function(){
+        var p=document.createElement('div');
+        p.className='falling-petal';
+        var s=Math.random()*9+5;
+        p.style.width=s+'px';
+        p.style.height=(s*1.3)+'px';
+        p.style.left=Math.random()*100+'%';
+        p.style.background=colors[Math.floor(Math.random()*colors.length)];
+        p.style.animationDuration=(Math.random()*6+5)+'s';
+        p.style.animationDelay=(Math.random()*2)+'s';
+        var rot=Math.random()*360;
+        p.style.transform='rotate('+rot+'deg)';
+        c.appendChild(p);
+      },idx*300+Math.random()*800);
+    })(i);
+  }
+}
+
+// ══════ 开启信封 ══════
+var opened=false;
+function openEnvelope(){
+  if(opened) return;
+  opened=true;
+
+  var envelope=document.getElementById('envelope');
+  var wrapper=document.getElementById('envelopeWrapper');
+  var letterFull=document.getElementById('letterFull');
+  var glow=document.getElementById('glow');
+  var hint=document.getElementById('hint');
+
+  envelope.classList.remove('close');
+  envelope.classList.add('open');
+
+  hint.style.transition='opacity .4s ease';
+  hint.style.opacity='0';
+
+  setTimeout(function(){
+    wrapper.classList.add('fade-out');
+  },1500);
+
+  setTimeout(function(){
+    letterFull.classList.add('show');
+    glow.classList.add('show');
+  },2100);
+
+  setTimeout(function(){
+    document.getElementById('roseHeader').classList.add('anim');
+  },2600);
+  setTimeout(function(){
+    document.getElementById('letterImage').classList.add('anim');
+  },3200);
+
+  setTimeout(function(){
+    createPetals();
+  },3200);
+
+  setTimeout(function(){
+    var bgm=document.getElementById('bgm');
+    var voice=document.getElementById('voice');
+    bgm.volume=0.1;
+    voice.volume=1.0;
+    bgm.play().catch(function(){});
+    voice.play().catch(function(){});
+  },2300);
+}
+</script>
+
+</body>
+</html>
